@@ -1,0 +1,31 @@
+# Ignore node_modules in client and server directories
+Frontend/node_modules/
+Backend/node_modules/
+node_modules/
+
+#Ignore Secured files
+Backend/controllers/workflowController.js
+Backend/services/workflowService.js
+Backend/utils
+Frontend/src/Utils/Constants.jsx
+Frontend/src/Utils/cropQAPIs.jsx
+
+# Other common files to ignore
+npm-debug.log
+yarn-debug.log
+yarn-error.log
+
+# Operating system files
+.DS_Store
+Thumbs.db
+
+# IDE or text editor specific files
+.vscode/
+.idea/
+
+# Build directories
+dist/
+build/
+
+# Environment files
+.env
