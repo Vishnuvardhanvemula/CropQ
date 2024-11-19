@@ -1,0 +1,79 @@
+/* General Styles */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f0f2f5;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.container {
+    max-width: 700px; /* Increased size */
+    width: 100%;
+    margin: 20px;
+    padding: 40px; /* Increased padding */
+    background-color: #ffffff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Center align the content */
+}
+
+h1 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 20px;
+    font-size: 28px; /* Increased font size */
+}
+
+form {
+    width: 100%; /* Ensure form takes full width of container */
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+td {
+    padding: 15px; /* Increased padding */
+}
+
+label {
+    color: #555;
+    font-weight: bold;
+}
+
+input {
+    width: 100%;
+    padding: 12px; /* Increased padding */
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+button {
+    padding: 15px; /* Increased padding */
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    font-size: 18px; /* Increased font size */
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+#result {
+    margin-top: 20px;
+    text-align: center;
+    font-size: 18px;
+    color: #333;
+}

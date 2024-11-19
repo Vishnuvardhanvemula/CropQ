@@ -1,0 +1,12 @@
+version: '3.8'
+
+services:
+  ragchatbot:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"  # FastAPI
+      - "8501:8501"  # Streamlit
+    env_file:
+      - .env  # Load environment variables from the .env file

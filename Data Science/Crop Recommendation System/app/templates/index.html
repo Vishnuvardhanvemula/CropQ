@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crop Recommendation System</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Crop Recommendation System</h1>
+        <form id="cropForm">
+            <table>
+                <tr>
+                    <td><label for="N">Nitrogen (N):</label></td>
+                    <td><input type="number" id="N" name="N" required></td>
+                </tr>
+                <tr>
+                    <td><label for="P">Phosphorus (P):</label></td>
+                    <td><input type="number" id="P" name="P" required></td>
+                </tr>
+                <tr>
+                    <td><label for="K">Potassium (K):</label></td>
+                    <td><input type="number" id="K" name="K" required></td>
+                </tr>
+                <tr>
+                    <td><label for="temperature">Temperature (°C):</label></td>
+                    <td><input type="number" id="temperature" name="temperature" required></td>
+                </tr>
+                <tr>
+                    <td><label for="humidity">Humidity (%):</label></td>
+                    <td><input type="number" id="humidity" name="humidity" required></td>
+                </tr>
+                <tr>
+                    <td><label for="ph">pH:</label></td>
+                    <td><input type="number" id="ph" name="ph" required></td>
+                </tr>
+                <tr>
+                    <td><label for="rainfall">Rainfall (mm):</label></td>
+                    <td><input type="number" id="rainfall" name="rainfall" required></td>
+                </tr>
+                <tr>
+                    <td colspan="2" style="text-align: center;">
+                        <button type="submit">Get Recommendation</button>
+                    </td>
+                </tr>
+            </table>
+        </form>
+        <div id="result"></div>
+    </div>
+    <script>
+        document.getElementById('cropForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const formData = new FormData(event.target);
+            const data = {};
+            formData.forEach((value, key) => {
+                data[key] = value;
+            });
+
+            fetch('/recommend', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ data: data })
+            })
+            .then(response => response.json())
+            .then(result => {
+                document.getElementById('result').innerText = 'Recommended Crop: ' + result.recommended_crop;
+            })
+            .catch(error => {
+                document.getElementById('result').innerText = 'Error: ' + error.message;
+            });
+        });
+    </script>
+</body>
+</html>

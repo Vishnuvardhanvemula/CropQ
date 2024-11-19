@@ -1,0 +1,11 @@
+numpy
+streamlit
+tensorflow
+flask
+
+
+fastapi
+uvicorn
+pillow
+python-multipart
+

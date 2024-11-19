@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fertilizer Recommendation</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Fertilizer Recommendation System</h1>
+        <form id="fertilizer-form">
+            <label for="N">Nitrogen (N):</label>
+            <input type="number" id="N" name="N" required><br><br>
+            <label for="P">Phosphorus (P):</label>
+            <input type="number" id="P" name="P" required><br><br>
+            <label for="K">Potassium (K):</label>
+            <input type="number" id="K" name="K" required><br><br>
+            <input type="submit" value="Get Recommendation">
+        </form>
+        <div id="result"></div>
+    </div>
+    <script src="{{ url_for('static', filename='scripts.js') }}"></script>
+</body>
+</html>

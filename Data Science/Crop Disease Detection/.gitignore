@@ -1,0 +1,39 @@
+# Ignore all virtual environment folders
+venv/
+**/venv/
+**/.venv/
+**/env/
+**/.env/
+
+# Ignore HDF5 files
+*.h5
+
+# Ignore Jupyter Notebook checkpoints
+Notebooks/
+*.ipynb_checkpoints
+
+# Ignore log files
+*.log
+
+# Ignore temporary files
+*.tmp
+*.tmp.*
+
+# Ignore swap files
+*.swp
+
+# Ignore Python bytecode files
+*.pyc
+*.pyo
+*.pyd
+*.log
+*.tmp
+*.tmp.*
+*.swp
+*.ipynb_checkpoints
+*.pyc
+*.pyo
+*.pyd
+
+README.md
+
