@@ -22,8 +22,6 @@ At **CropQ**, we are transforming agriculture into a smarter, more sustainable v
 - Fully **Dockerized** application ensures easy environment replication and smooth deployment.
 - Automated **GitHub Actions CI/CD pipeline** handles build, test, and deployment processes.
 
----
-
 ## 🛠️ Tech Stack & Tools
 
 ### **Frontend**
@@ -47,8 +45,10 @@ At **CropQ**, we are transforming agriculture into a smarter, more sustainable v
 
 ## 🚀 Performance Highlights
 ### **PageSpeed Insights Scores**
+
 ![{5AB67F44-F239-4103-B64E-C8422432F838}](https://github.com/user-attachments/assets/1405d917-0c4d-4d21-9e8b-7e5b3668b2df)
----
 
 ## 🌐 Live Demo
 ✨ **[CropQ](https://cropq.vercel.app/)** is live! Explore the features and see how AI is revolutionizing agriculture.
+
+![cropq](https://github.com/user-attachments/assets/0ee129d3-535c-4b93-b774-b2b1afed794f)
