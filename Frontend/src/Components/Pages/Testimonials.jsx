@@ -8,8 +8,8 @@ const Testimonials = () => {
   useEffect(() => {
     cropQAPIs.getTestimonials()
       .then((response) => {
-        if (response.data.data) {
-          setTestimonials(response.data.data);
+        if (response) {
+          setTestimonials(response);
         }
       })
       .catch((error) => {
@@ -33,7 +33,7 @@ const Testimonials = () => {
               testimonials.map((testimonial) => (
                 <div
                   key={testimonial._id} 
-                  className="bg-neutral-200 dark:bg-neutral-900 rounded-md p-6 text-md shadow-lg dark:border-neutral-500 shadow-lg flex flex-col h-full min-w-[300px] max-h-[400px]" // Set fixed height for the container
+                  className="bg-neutral-200 dark:bg-neutral-900 rounded-md p-6 text-md  dark:border-neutral-500 shadow-lg flex flex-col h-full min-w-[300px] max-h-[400px]" // Set fixed height for the container
                 >
                   <div className="flex-grow">
                     <p className="text-neutral-600 dark:text-neutral-500 font-normal h-[100px] overflow-hidden text-ellipsis">
