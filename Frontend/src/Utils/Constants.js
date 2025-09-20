@@ -30,19 +30,22 @@ import { Camera, CloudUpload, PcCase } from "lucide-react";
 // Features for FeatureSection (Home)
 export const features = [
     {
-        image: feature1,
+        link: feature1,
         title: "Disease Detection",
-        description: "Detect plant diseases using AI-powered image analysis."
+        count : 1000,
+        description: "Identifies over 1000 plant species with precision."
     },
     {
-        image: feature2,
+        link: feature2,
         title: "Crop Recommendation",
-        description: "Get crop recommendations based on soil and climate data."
+        count : "5 Sec",
+        description: "Results delivered in under 5 seconds."
     },
     {
-        image: feature3,
+        link: feature3,
+        count : "90%",
         title: "Fertilizer Advice",
-        description: "Receive tailored fertilizer advice for optimal growth."
+        description: "Boosts a prediction accuracy rate of over 90%"
     }
 ];
 
@@ -51,70 +54,70 @@ export const workflowFeatures = [
     {
         image: workflow1,
         icon: Camera,
-        link: "/CropIdentification",
+        link: "/cropidentification",
         text: "Crop Identification",
         instructions: [
-            "Analyze crop data for yield estimation.",
-            "Optimize resources for better output.",
-            "Make informed decisions for your farm."
+           "Capture or select a photo of the crop you want to identify.",
+           "Upload the photo to the system for AI analysis.",
+           "Receive detailed insights on the crop's species and recommended care practices."
         ]
 
     },
     {
         image: workflow2,
         icon: CloudUpload,
-        link: "/CropRecommendation",
+        link: "/croprecommendation",
         text: "Crop Recommendation",
         instructions: [
-            "Enter soil and climate details.",
-            "AI suggests best crops for your region.",
-            "Plan your farming with confidence."
+            "Input your soil's nitrogen (N), phosphorus (P), and potassium (K) values.",
+            "Enter environmental conditions like Temperature, Humidity, Soil pH, and Rainfall.",
+            "Receive recommendations for the best crops to grow in your region for maximum yield."
         ]
     },
     {
         image: workflow3,
         icon: PcCase,
-        link: "/FertilizerRecommendation",
-        text: "Fertilizer Advice",
+        link: "/fertilizerrecommendation",
+        text: "Fertilizer Recommendation",
         instructions: [
-            "Input crop and soil data.",
-            "Get personalized fertilizer recommendations.",
-            "Boost your yield with smart advice."
+           "Enter the nitrogen (N), phosphorus (P), and potassium (K) values of your soil.",
+           "Provide the soil type and crop details (e.g., type and growth stage).",
+           "Receive fertilizer recommendations tailored to your soil and crop's needs for optimal development."
         ]
     },
     {
 
         image: workflow4,
         icon: CloudUpload,
-        link: "/PlantDiseasePrediction",
-        text: "Disease Detection",
+        link: "/plantdiseaseprediction",
+        text: "Plant Disease Prediction",
         instructions: [
-            "Upload a clear image of your crop.",
-            "Let AI analyze for possible diseases.",
-            "Get instant diagnosis and advice."
+            "Upload an image of the plant to detect early signs of disease.",
+            "Allow the system to analyze the image for potential plant health issues.",
+            "Receive insights and recommendations on how to prevent or treat the identified plant diseases."
         ]
     },
     {
 
         image: workflow5,
         icon: Camera,
-        link: "/WeatherReport",
-        text: "Weather Forecast",
+        link: "/weatherreport",
+        text: "Weather Report",
         instructions: [
-            "Get real-time weather updates.",
-            "Plan your farming activities accordingly.",
-            "Minimize risks with accurate forecasts."
+            "Search by city to get the localized weather forecast.",
+            "Receive the current weather report, including temperature, humidity, and rainfall data.",
+            "Get future weather predictions to help plan your farming activities."
         ]
     },
     {
         image: workflow6,
         icon: PcCase,
-        link: "/MarketPriceForecasting",
+        link: "/marketpriceforecasting",
         text: "Market Analysis",
         instructions: [
-            "Access market trends and prices.",
-            "Maximize profits with smart selling.",
-            "Stay ahead with AI-driven insights."
+            "View the predicted future market prices for your crops based on historical trends.",
+            "Analyze the system's forecasts on crop market fluctuations.",
+            "Decide the best time to sell your crops for maximum profit based on price trends."
         ]
     }
 ];
