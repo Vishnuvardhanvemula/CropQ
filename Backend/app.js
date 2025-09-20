@@ -14,6 +14,10 @@ dotenv.config();
 connectDB();
 const app = express();
 
+
+// Enable CORS for frontend
+app.use(cors({ origin: 'http://localhost:5173' }));
+
 // Middleware
 app.use(morgan('dev'));
 app.use(express.json());
