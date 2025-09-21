@@ -1,17 +1,19 @@
-
+import axios from 'axios';
 // Unified API utility for CropQ frontend
-const BASE_URL = 'http://localhost:3000/workflow'; // Adjust if your backend is served elsewhere
+const BASE_URL = 'http://localhost:3000/workflow'; 
 
 export const cropQAPIs = {
   // Crop Identification (image upload)
   cropIdentification: async (imageFile) => {
     const formData = new FormData();
-    formData.append('image', imageFile);
+    formData.append('images', imageFile);
     const response = await fetch(`${BASE_URL}/identifyCrop`, {
       method: 'POST',
       body: formData,
     });
-    return response;
+    const data = await response.json();
+    console.log("Crop Identification API response :", data);
+    return data;
   },
 
   // Market Price Forecasting
@@ -21,23 +23,15 @@ export const cropQAPIs = {
   },
 
   // Crop Recommendation
-  cropRecommendation: async (payload) => {
-    const response = await fetch(`${BASE_URL}/croprecommendation`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
-    });
-    return response;
+   cropRecommendation: async (payload) => {
+    const res = await axios.post(`${BASE_URL}/croprecommendation`, payload);
+    return res.data; 
   },
 
   // Fertilizer Recommendation
   fertilizerRecommendation: async (payload) => {
-    const response = await fetch(`${BASE_URL}/fertilizerrecommendation`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
-    });
-    return response;
+    const res = await axios.post(`${BASE_URL}/fertilizerrecommendation`, payload);
+    return res.data;  
   },
 
   // Plant Disease Prediction (image upload)
@@ -48,7 +42,8 @@ export const cropQAPIs = {
       method: 'POST',
       body: formData,
     });
-    return response;
+    const data = await response.json();
+    return data;
   },
 
   // Weather Report (current or forecast)
@@ -71,5 +66,14 @@ export const cropQAPIs = {
       body: JSON.stringify({ message }),
     });
     return response;
+  },
+
+  // Testimonials (mocked for now)
+  getTestimonials: async () => {
+    // Replace with actual API call if available
+    return [
+      { name: "John Doe", feedback: "CropQ helped me detect diseases early and save my crops!" },
+      { name: "Jane Smith", feedback: "The recommendations are spot on and easy to follow." }
+    ];
   },
 };

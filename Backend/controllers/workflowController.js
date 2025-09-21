@@ -1,50 +1,113 @@
 // controllers/workflowController.js
 const axios = require('axios');
+const cheerio = require('cheerio');
+const { response } = require('express');
 const FormData = require('form-data');
+const multer = require('multer');
+const upload = multer();
 
 // Identify crop (calls external API or dummy)
+// Use multer middleware in your route: router.post('/identifyCrop', upload.single('image'), workflowController.identifyCrop);
+
 exports.identifyCrop = async (req, res) => {
     try {
-        const imageFile = req.file; // make sure you use multer middleware for file upload
-        if (!imageFile) {
-            return res.status(400).send('Image is required');
-        }
+        const imageFile = req.file;
+        if (!imageFile) return res.status(400).send("Image is required");
 
+        // Build form-data with the uploaded image
         const formData = new FormData();
-        formData.append('image', imageFile.buffer, imageFile.originalname);
+        formData.append("images", imageFile.buffer, {
+            filename: imageFile.originalname,
+            contentType: imageFile.mimetype,
+        });
+        formData.append("organs", "auto"); // optional, can be omitted for auto detection
 
-        // Example: call external API
+        // Query parameters for Pl@ntNet
+        const queryParams = new URLSearchParams({
+            "api-key": process.env.PLANTNET_API_KEY,
+            "include-related-images": "true",
+            "nb-results": "3",
+            "lang": "en",
+            "no-reject": "false",
+        });
+
         const response = await axios.post(
-            `${process.env.API_URL}/CropQ/workflow/identifyCrop`,
+            `https://my-api.plantnet.org/v2/identify/all?${queryParams.toString()}`,
             formData,
-            {
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                    'apiKey': process.env.API_KEY,
-                    ...formData.getHeaders(),
-                },
-            }
+            { headers: formData.getHeaders() }
         );
 
-        res.json(response.data);
+        // Clean response: extract top species and related images
+        const cleanedResults = response.data.results.map((item) => ({
+            scientificName: item.species.scientificName,
+            commonNames: item.species.commonNames || [],
+            score: item.score,
+            relatedImages: item.relatedImages?.map((img) => img.url) || [],
+        }));
+
+        res.json({
+            bestMatch: response.data.bestMatch,
+            results: cleanedResults,
+            version: response.data.version,
+            remainingRequests: response.data.remainingIdentificationRequests,
+        });
     } catch (error) {
-        console.error(error);
-        res.status(500).send('Error identifying crop');
+        console.error(
+            "Pl@ntNet API error:",
+            error.response?.data || error.message
+        );
+        res
+            .status(error.response?.status || 500)
+            .send(error.response?.data?.message || "Error identifying crop");
     }
 };
 
 // Forecast market prices
-exports.getCropPrices = async (req, res) => {
+exports.marketPriceForecasting = async (req, res) => {
     try {
-        res.json({
+        // Accept state and date from query params
+        const state = req.query.state || "Karnataka";
+        const date = req.query.date || "25-10-2023";
+
+        if (!state || !date) {
+            return res.status(400).json({
+                success: false,
+                error: "state and date query params required",
+            });
+        }
+
+        // AGMARKNET state-level report URL
+        const url = `https://agmarknet.gov.in/Price_Report/PR_StatewiseCommodityReport_Day.aspx?State=${encodeURIComponent(state)}&Date=${encodeURIComponent(date)}`;
+        const resp = await axios.get(url);
+        const $ = cheerio.load(resp.data);
+
+        const results = [];
+        $("table tr").each((i, el) => {
+            const cols = $(el).find("td");
+            if (cols.length > 0) {
+                results.push({
+                    market: $(cols[0]).text().trim(),
+                    commodity: $(cols[1]).text().trim(),
+                    minPrice: $(cols[2]).text().trim(),
+                    maxPrice: $(cols[3]).text().trim(),
+                    modalPrice: $(cols[4]).text().trim(),
+                });
+            }
+        });
+        // Log the results for debugging
+        console.log("Scraped results:", results);
+        return res.json({
             success: true,
-            prices: [
-                { crop: 'Wheat', price: 2500 },
-                { crop: 'Rice', price: 3000 },
-            ],
+            state,
+            date,
+            prices: results,
         });
     } catch (error) {
-        res.status(500).json({ success: false, error: error.message });
+        console.error("Error scraping AGMARKNET by location:", error.message);
+        return res.status(500).json({
+            success: false,
+            error: error.message,
+        });
     }
 };
 
@@ -61,8 +124,10 @@ exports.cropRecommendation = async (req, res) => {
             payload,
             { headers: { 'Content-type': 'application/json' } }
         );
-
-        res.json(response.data);
+        res.json({
+            success: true,
+            recommended_crop: response.data.recommended_crop
+        });
     } catch (error) {
         console.error(error);
         res.status(500).send('Error fetching crop recommendation');
@@ -82,38 +147,52 @@ exports.fertilizerRecommendation = async (req, res) => {
             payload,
             { headers: { 'Content-type': 'application/json' } }
         );
-
-        res.json(response.data);
+        res.json({
+            success: true,
+            Fertilizer: response.data.Fertilizer,
+        });
     } catch (error) {
         console.error(error);
         res.status(500).send('Error fetching fertilizer recommendation');
     }
 };
 
-// Plant disease prediction
+// Plant disease prediction (calls external API )
+
 exports.plantDiseasePrediction = async (req, res) => {
     try {
-        const imageFile = req.files?.file;
-        if (!imageFile) {
-            return res.status(400).send('File is required');
-        }
+        const imageFile = req.file;
 
-        const formData = new FormData();
-        formData.append('file', imageFile.data);
+        // convert buffer to base64
+        const base64Image = imageFile.buffer.toString("base64");
 
-        const response = await axios.post(
-            'https://agriculture-ai-ef4b0b78e08a.herokuapp.com/predict',
-            formData,
-            { headers: { 'Content-Type': 'multipart/form-data' } }
-        );
+        // Crop.health API endpoint
+        const url = "https://crop.kindwise.com/api/v1/identification";
 
-        res.json(response.data);
+        // request body (JSON)
+        const requestBody = {
+            images: [base64Image],
+            similar_images: true,          // optional
+            // datetime: "2025-09-21",     // optional
+            // custom_id: 123               // optional
+        };
+
+        const response = await axios.post(url, requestBody, {
+            headers: {
+                "Content-Type": "application/json",
+                "Api-Key": process.env.CROP_HEALTH_API_KEY,
+            },
+        });
+
+        // forward the response as-is, or extract only diseases:
+        const diseases = response.data.result?.disease?.suggestions || [];
+        res.json({ diseases });
+
     } catch (error) {
-        console.error(error);
-        res.status(500).send('Error predicting plant disease');
+        console.error("Crop.health API Error:", error.response?.data || error.message);
+        res.status(500).json({ error: "Failed to fetch crop health prediction" });
     }
 };
-
 // Weather report
 exports.getWeatherReport = async (req, res) => {
     try {
@@ -132,7 +211,6 @@ exports.getWeatherReport = async (req, res) => {
                 },
             }
         );
-
         res.json(response.data);
     } catch (error) {
         console.error(error);

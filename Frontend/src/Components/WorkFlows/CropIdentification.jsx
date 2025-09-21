@@ -7,6 +7,9 @@ const CropIdentification = () => {
   const [selectedImage, setSelectedImage] = useState(null);
   const [loading, setLoading] = useState(false);
   const [uploadedImage, setUploadedImage] = useState(null);
+  const [bestMatch, setBestMatch] = useState(null);
+  const [predictedOrgans, setPredictedOrgans] = useState([]);
+  const [results, setResults] = useState([]);
   const [apiResponse, setApiResponse] = useState(null);
 
   const handleImageUpload = (event) => {
@@ -26,11 +29,14 @@ const CropIdentification = () => {
     setLoading(true);
     try {
       const response = await cropQAPIs.cropIdentification(selectedImage);
-      if (response.status === 200) {
-        setApiResponse(response.data); 
-        setUploadedImage(URL.createObjectURL(selectedImage));
-        notifySuccess("Image uploaded successfully and Scroll Down to see our predictions");
-      }
+      // response is already parsed JSON
+      setApiResponse(response);
+      setUploadedImage(URL.createObjectURL(selectedImage));
+      setBestMatch(response.bestMatch || null);
+      setPredictedOrgans(response.predictedOrgans || []);
+      setResults(response.results || []);
+      notifySuccess("Image uploaded successfully. Scroll down to see predictions.");
+      console.log("Crop Identification API response :", response.results);
     } catch (error) {
       notifyError("An error occurred. Please try again later.");
     } finally {
@@ -53,8 +59,8 @@ const CropIdentification = () => {
 
       <div className="mt-10 flex flex-col items-center space-y-4">
         <div className="flex flex-col items-center justify-center w-full md:w-8/12 lg:w-6/12 p-10 bg-gray-200 dark:bg-neutral-900 rounded-lg text-center" data-aos="zoom-in" data-aos-delay="300">
-          <label 
-            htmlFor="imageUpload" 
+          <label
+            htmlFor="imageUpload"
             className="block text-neutral-500 mb-2"
           >
             Upload Image (JPEG, JPG, PNG, JFIF only)
@@ -89,8 +95,18 @@ const CropIdentification = () => {
                   </span>
                 </h2>
                 <p className="text-neutral-600 dark:text-neutral-500 font-normal mt-5">
-                  Discover our top 2 predictions just below with scientific names, common names, matched scores, related images, and more fascinating insights. Scroll down for a closer look!
+                  Best Match: <span className="text-custom-green">{bestMatch}</span>
                 </p>
+                {predictedOrgans.length > 0 && (
+                  <div className="mt-2">
+                    <h4 className="font-normal">Predicted Organs:</h4>
+                    {predictedOrgans.map((organ, idx) => (
+                      <div key={idx} className="text-custom-green">
+                        {organ.organ} (Score: {Math.round(organ.score * 100)}%)
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
               <div className="w-full sm:w-5/12 md:w-5/12 lg:w-5/12 p-6" data-aos="zoom-in" data-aos-delay="300">
                 <img
@@ -103,19 +119,16 @@ const CropIdentification = () => {
             </div>
 
             <h2 className="text-2xl sm:text-3xl lg:text-4xl text-center mt-20 tracking-wide" data-aos="fade-up" data-aos-delay="300">
-              Top Matched Predic
-              <span className="bg-gradient-to-r from-[#6bc83f] to-[#2d511c] text-transparent bg-clip-text">
-              tion Insights
-              </span>
+              Top Matched Prediction Insights
             </h2>
 
-            {apiResponse.results.slice(0, 2).map((result, index) => (
+            {results.slice(0, 3).map((result, index) => (
               <div key={index} className="mt-5 flex flex-wrap items-center" data-aos="fade-up" data-aos-delay={300 + index * 100} >
                 <div className="flex flex-wrap w-full p-6">
                   <div className="w-full sm:w-full md:w-6/12 lg:w-6/12 text-left">
                     <h3 className="font-normal">
-                      Scientific Name :  
-                      <span className="text-custom-green"> {result.species.scientificName}</span>
+                      Scientific Name :
+                      <span className="text-custom-green"> {result.scientificName}</span>
                     </h3>
                     <p className="font-normal">
                       Matched Score :
@@ -126,30 +139,17 @@ const CropIdentification = () => {
                   <div className="w-full sm:w-full md:w-6/12 lg:w-6/12 text-left">
                     <div className="flex">
                       <p className="font-normal">Common Names : </p> &nbsp;
-                      <div className="text-custom-green"> 
-                        {result.species.commonNames.map((name, idx) => (
+                      <div className="text-custom-green">
+                        {result.commonNames?.map((name, idx) => (
                           <p key={idx} className="block">{name}</p>
                         ))}
                       </div>
                     </div>
                   </div>
                 </div>
-
-                <div className="w-full sm:w-full md:w-full lg:w-full p-6">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-                    {result.images.slice(0, 3).map((image, idx) => (
-                      <img
-                        key={idx}
-                        src={image.url.s}
-                        alt={`Related image ${idx + 1}`}
-                        loading="lazy"
-                        className="w-full h-40 sm:h-40 md:h-50 lg:h-60 object-cover rounded-lg"
-                      />
-                    ))}
-                  </div>
-                </div>
               </div>
             ))}
+
           </div>
         )}
       </div>

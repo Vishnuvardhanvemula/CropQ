@@ -40,11 +40,14 @@ const CropRecommendation = () => {
 
     try {
       const response = await cropQAPIs.cropRecommendation(payload);
+
       setLoading(false);
-      if (response.status === 200) {
-        setRecommendedCrop(response.data.recommended_crop);
+
+      if (response.success) {
+        setRecommendedCrop(response.recommended_crop);
         setIsModalOpen(true);
         notifySuccess('Crop Recommendation Successfully.');
+
         setFormData({
           N: '',
           P: '',
@@ -53,14 +56,16 @@ const CropRecommendation = () => {
           humidity: '',
           ph: '',
           rainfall: ''
-          });
+        });
       } else {
-        notifyError('something went wrong. Please try again later.');
+        notifyError('Something went wrong. Please try again later.');
       }
     } catch (error) {
+      console.log(error);
       setLoading(false);
       notifyError('An error occurred. Please try again later.');
     }
+
   };
 
   const closeModal = () => {

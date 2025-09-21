@@ -22,15 +22,12 @@ const PlantDiseasePrediction = () => {
       notifyWarn("Please upload an image before submitting.");
       return;
     }
-
     setLoading(true);
     try {
-      const response = await cropQAPIs.plantDiseasePrediction(selectedImage);
-      if (response.status === 200) {
-        setApiResponse(response.data); 
-        setUploadedImage(URL.createObjectURL(selectedImage));
-        notifySuccess("Image uploaded successfully and Scroll Down to see our predictions");
-      }
+      const data = await cropQAPIs.plantDiseasePrediction(selectedImage);
+      setApiResponse(data);
+      setUploadedImage(URL.createObjectURL(selectedImage));
+      notifySuccess("Image uploaded successfully and Scroll Down to see our predictions");
     } catch (error) {
       notifyError("An error occurred. Please try again later.");
     } finally {
@@ -53,8 +50,8 @@ const PlantDiseasePrediction = () => {
 
       <div className="mt-10 flex flex-col items-center space-y-4">
         <div className="flex flex-col items-center justify-center w-full md:w-8/12 lg:w-6/12 p-10 bg-gray-200 dark:bg-neutral-900 rounded-lg text-center" data-aos="zoom-in" data-aos-delay="300">
-          <label 
-            htmlFor="imageUpload" 
+          <label
+            htmlFor="imageUpload"
             className="block text-neutral-500 mb-2"
           >
             Upload Image (JPEG, JPG, PNG, TIFF, WEBP only)
@@ -92,7 +89,7 @@ const PlantDiseasePrediction = () => {
                 <p className="text-neutral-600 dark:text-neutral-500 font-normal mt-5">
                   Predicted Disease : &nbsp;
                   <span className="bg-gradient-to-r from-[#6bc83f] to-[#2d511c] text-transparent bg-clip-text capitalize">
-                    {apiResponse.prediction.replace(/_+/g, ' ')}
+                    {apiResponse.prediction ? apiResponse.prediction.replace(/_+/g, ' ') : 'No prediction'}
                   </span>
                 </p>
               </div>

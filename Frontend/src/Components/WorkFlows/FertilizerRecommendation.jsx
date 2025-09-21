@@ -32,8 +32,8 @@ const FertilizerRecommendation = () => {
     try {
       const response = await cropQAPIs.fertilizerRecommendation(payload);
       setLoading(false);
-      if (response.status === 200) {
-        setRecommendedFertiizer(response.data.Fertilizer);
+      if (response.success) {
+        setRecommendedFertiizer(response.Fertilizer);
         setIsModalOpen(true);
         notifySuccess('Fertilizer Recommendation Successfully.');
         setFormData({
